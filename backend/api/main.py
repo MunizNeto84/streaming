@@ -4,10 +4,8 @@ from backend.infra.db.database import Database
 from backend.model.videos import Videos
 
 
-
 app = FastAPI()
 db = Database()
-
 
 
 @app.get("/videos")
