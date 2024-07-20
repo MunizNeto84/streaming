@@ -1,7 +1,7 @@
-from fastapi import FastAPI
-
+from fastapi import FastAPI, Response, status
 from backend.infra.db.database import Database
 from backend.model.videos import Videos
+import json
 
 
 app = FastAPI()
@@ -38,7 +38,7 @@ def add_video(titulo: str, descricao: str, url: str):
     except Exception as e:
         return {"error": str(e)}
     
-@app.post("/video/{id}")
+@app.put("/video/{id}")
 def edit_video(id: int, titulo: str, descricao: str, url: str):
     try:
         query_object = Videos.edit_video(id, titulo, descricao, url)
@@ -47,6 +47,17 @@ def edit_video(id: int, titulo: str, descricao: str, url: str):
     
     except Exception as e:
         return {"error": str(e)}    
+    
+@app.delete("/video/{id}")
+def delete_video(id):
+    try:
+        query_object = Videos.delete_video(id)
+        db.query(query_object)
+        return {"message": "Video deleted successfully"}
+               
+    
+    except Exception as e:
+        return {"error": str(e)}     
  
 
 
