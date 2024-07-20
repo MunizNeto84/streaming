@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Response, HTTPException, status
 from backend.infra.db.database import Database
 from backend.model.videos import Videos
+from backend.model.categoria import Categoria
 import json
 
 app = FastAPI()
@@ -29,7 +30,7 @@ def get_videos(id):
 
 
 @app.post("/video")
-def add_video(titulo: str, descricao: str, url: str):
+def create_video(titulo: str, descricao: str, url: str):
     try:
         query_object = Videos.insert_video(titulo, descricao, url)
         db.query(query_object)
@@ -69,4 +70,16 @@ def delete_video(id):
  
 
 
-        
+@app.post("/category")
+def create_video(titulo: str, cor: str):
+    try:
+        query_object = Categoria.insert_category(titulo, cor)
+        db.query(query_object)
+        return Response(
+            content=json.dumps({"message": "Categoria criada com sucesso"}),
+            status_code=status.HTTP_201_CREATED,
+            media_type="application/json"
+        )
+    
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))        
