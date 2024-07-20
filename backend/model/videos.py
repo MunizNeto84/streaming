@@ -1,3 +1,5 @@
+import re
+
 class Videos:
     def __init__(self, id, titulo, descricao, url):
         self.id = id
@@ -35,5 +37,11 @@ class Videos:
         return f"SELECT EXISTS (SELECT 1 FROM videos WHERE id = {video_id});"
 
     def validate_url(url):
-        return url.startswith("http://") or url.startswith("https://")
+        url_regex = re.compile(
+            r'^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$'
+        )
+        if not url_regex.match(url):
+            raise ValueError('Invalid URL')
+        return url
+        
         
