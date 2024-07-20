@@ -37,6 +37,16 @@ def add_video(titulo: str, descricao: str, url: str):
     
     except Exception as e:
         return {"error": str(e)}
+    
+@app.post("/video/{id}")
+def edit_video(id: int, titulo: str, descricao: str, url: str):
+    try:
+        query_object = Videos.edit_video(id, titulo, descricao, url)
+        db.query(query_object)
+        return {"message": "Video edit successfully"}
+    
+    except Exception as e:
+        return {"error": str(e)}    
  
 
 

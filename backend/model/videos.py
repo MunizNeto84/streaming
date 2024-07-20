@@ -16,8 +16,14 @@ class Videos:
     @staticmethod
     def insert_video(titulo, descricao, url):
         if not Videos.validate_url(url):
+            raise ValueError('URL must start with "http://" or "https://"')
+        return f"INSERT INTO videos (titulo, descricao, url) VALUES ('{titulo}', '{descricao}', '{url}');"
+
+    @staticmethod
+    def edit_video(id, titulo, descricao, url):
+        if not Videos.validate_url(url):
             raise ValueError('URL must start with "http://"')
-        return f"INSERT INTO videos (titulo, descricao, url) VALUES ('{titulo}', '{descricao}', '{url}');"    
+        return f"UPDATE videos SET titulo = '{titulo}', descricao = '{descricao}', url = '{url}' WHERE videos.id = {id};"    
     
     
     def validate_url(url):
