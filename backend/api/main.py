@@ -1,8 +1,17 @@
 from fastapi import FastAPI, Response, HTTPException, status
+from pydantic import BaseModel
+from typing import Optional
+
 from backend.infra.db.database import Database
 from backend.model.videos import Videos
 from backend.model.categoria import Categoria
 import json
+
+class Video(BaseModel):
+    categoria_id: int = 1
+    titulo: Optional[str] = "titulo"
+    descricao: Optional[str] = "decricao do video"
+    url: Optional[str] = "https://www.youtube.com/watch?v=string"
 
 app = FastAPI()
 db = Database()
@@ -30,12 +39,12 @@ def get_videos(id):
 
 
 @app.post("/video")
-def create_video(titulo: str, descricao: str, url: str):
+def create_video(video: Video):
     try:
-        query_object = Videos.insert_video(titulo, descricao, url)
+        query_object = Videos.insert_video(video.categoria_id, video.titulo, video.descricao, video.url)
         db.query(query_object)
         return Response(
-            content=json.dumps({"message": "Video added successfully"}),
+            content=json.dumps({"message": "Video adicionado com sucesso"}),
             status_code=status.HTTP_201_CREATED,
             media_type="application/json"
         )

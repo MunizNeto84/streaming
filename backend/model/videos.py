@@ -16,10 +16,10 @@ class Videos:
         return "SELECT * FROM videos;"
     
     @staticmethod
-    def insert_video(titulo, descricao, url):
+    def insert_video(categoria_id, titulo, descricao, url):
         if not Videos.validate_url(url):
             raise ValueError('URL must start with "http://" or "https://"')
-        return f"INSERT INTO videos (titulo, descricao, url) VALUES ('{titulo}', '{descricao}', '{url}');"
+        return f"INSERT INTO videos (categoria_id, titulo, descricao, url) VALUES ('{categoria_id}', '{titulo}', '{descricao}', '{url}');"
 
     @staticmethod
     def edit_video(id, titulo, descricao, url):
