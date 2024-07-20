@@ -6,6 +6,10 @@ class Videos:
         self.url = url
 
     @staticmethod
+    def get_video_by_id(id):
+        return F"SELECT * FROM videos WHERE videos.id = {id}"
+    
+    @staticmethod
     def get_all_videos():
         return "SELECT * FROM videos;"
     

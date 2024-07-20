@@ -7,7 +7,6 @@ from backend.model.videos import Videos
 app = FastAPI()
 db = Database()
 
-
 @app.get("/videos")
 def get_videos():
     try:
@@ -17,6 +16,17 @@ def get_videos():
     
     except Exception as e:
         return {"error": str(e)}
+
+@app.get("/videos/{id}")
+def get_videos(id):
+    try:
+        query_object = Videos.get_video_by_id(id)
+        result = db.query(query_object)
+        return {"videos": result}
+    
+    except Exception as e:
+        return {"error": str(e)}
+
 
 @app.post("/video")
 def add_video(titulo: str, descricao: str, url: str):
