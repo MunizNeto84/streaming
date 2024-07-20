@@ -1,8 +1,7 @@
-from fastapi import FastAPI, Response, status
+from fastapi import FastAPI, Response, HTTPException, status
 from backend.infra.db.database import Database
 from backend.model.videos import Videos
 import json
-
 
 app = FastAPI()
 db = Database()
@@ -15,17 +14,18 @@ def get_videos():
         return {"videos": result}
     
     except Exception as e:
-        return {"error": str(e)}
+         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 @app.get("/videos/{id}")
 def get_videos(id):
     try:
         query_object = Videos.get_video_by_id(id)
         result = db.query(query_object)
+        
         return {"videos": result}
     
     except Exception as e:
-        return {"error": str(e)}
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
 @app.post("/video")
@@ -33,31 +33,39 @@ def add_video(titulo: str, descricao: str, url: str):
     try:
         query_object = Videos.insert_video(titulo, descricao, url)
         db.query(query_object)
-        return {"message": "Video added successfully"}
+        return Response(
+            content=json.dumps({"message": "Video added successfully"}),
+            status_code=status.HTTP_201_CREATED,
+            media_type="application/json"
+        )
     
     except Exception as e:
-        return {"error": str(e)}
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     
 @app.put("/video/{id}")
 def edit_video(id: int, titulo: str, descricao: str, url: str):
     try:
         query_object = Videos.edit_video(id, titulo, descricao, url)
         db.query(query_object)
-        return {"message": "Video edit successfully"}
+        return {"message": "Video atualizado"}
     
     except Exception as e:
-        return {"error": str(e)}    
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))    
     
 @app.delete("/video/{id}")
 def delete_video(id):
     try:
+        query_object = Videos.video_exists(id)
+        result = db.query(query_object)
+        if not result[0][0]:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Video, não encontrado")
+
         query_object = Videos.delete_video(id)
         db.query(query_object)
-        return {"message": "Video deleted successfully"}
-               
-    
+        return {"message": "Video, deletado com sucesso"}
+            
     except Exception as e:
-        return {"error": str(e)}     
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))    
  
 
 

@@ -30,5 +30,10 @@ class Videos:
         return F"DELETE FROM videos WHERE videos.id = {id}"
     
     
+    @staticmethod
+    def video_exists(video_id):
+        return f"SELECT EXISTS (SELECT 1 FROM videos WHERE id = {video_id});"
+
     def validate_url(url):
         return url.startswith("http://") or url.startswith("https://")
+        
