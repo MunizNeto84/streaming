@@ -76,7 +76,16 @@ def delete_video(id):
             
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))    
- 
+
+@app.get("/categorys")
+def get_category():
+    try:
+        query_object = Categoria.get_all_category()
+        result = db.query(query_object)
+        return {"Category": result}
+
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))    
 
 
 @app.post("/category")
