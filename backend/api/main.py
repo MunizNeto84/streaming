@@ -27,7 +27,7 @@ def get_videos():
          raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 @app.get("/videos/{id}")
-def get_videos(id):
+def get_videos_by_id(id):
     try:
         query_object = Videos.get_video_by_id(id)
         result = db.query(query_object)
@@ -77,16 +77,25 @@ def delete_video(id):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))    
 
-@app.get("/categorys")
+@app.get("/category")
 def get_category():
     try:
         query_object = Categoria.get_all_category()
         result = db.query(query_object)
-        return {"Category": result}
+        return {"category": result}
 
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))    
 
+@app.get("/category/{id}")
+def get_category_by_id(id):
+    try:
+        query_object = Categoria.get_category_by_id(id)
+        result = db.query(query_object)
+        return {"category": result}
+    
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))  
 
 @app.post("/category")
 def create_video(titulo: str, cor: str):
@@ -101,3 +110,5 @@ def create_video(titulo: str, cor: str):
     
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))        
+
+  

@@ -8,6 +8,10 @@ class Categoria:
     @staticmethod
     def get_all_category():
         return "SELECT * FROM categoria;"
+    
+    @staticmethod
+    def get_category_by_id(id):
+        return f"SELECT * FROM categoria WHERE id = {id};"
 
     @staticmethod
     def insert_category(titulo, cor):

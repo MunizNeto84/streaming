@@ -9,7 +9,7 @@ class Videos:
 
     @staticmethod
     def get_video_by_id(id):
-        return F"SELECT * FROM videos WHERE videos.id = {id}"
+        return f"SELECT * FROM videos WHERE videos.id = {id}"
     
     @staticmethod
     def get_all_videos():
@@ -29,7 +29,7 @@ class Videos:
 
     @staticmethod
     def delete_video(id):
-        return F"DELETE FROM videos WHERE videos.id = {id}"
+        return f"DELETE FROM videos WHERE videos.id = {id}"
     
     
     @staticmethod
