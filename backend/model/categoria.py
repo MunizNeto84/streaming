@@ -16,3 +16,7 @@ class Categoria:
     @staticmethod
     def insert_category(titulo, cor):
         return f"INSERT INTO categoria (titulo, cor) VALUES ('{titulo}', '{cor}');"
+    
+    @staticmethod
+    def edit_category(id, titulo, cor):
+        return f"UPDATE categoria SET titulo = '{titulo}', cor = '{cor}' WHERE id = {id};"   

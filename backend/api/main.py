@@ -53,9 +53,9 @@ def create_video(video: Video):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     
 @app.put("/video/{id}")
-def edit_video(id: int, titulo: str, descricao: str, url: str):
+def edit_video(id: int, categoria_id: str, titulo: str, descricao: str, url: str):
     try:
-        query_object = Videos.edit_video(id, titulo, descricao, url)
+        query_object = Videos.edit_video(id, categoria_id, titulo, descricao, url)
         db.query(query_object)
         return {"message": "Video atualizado"}
     
@@ -98,7 +98,7 @@ def get_category_by_id(id):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))  
 
 @app.post("/category")
-def create_video(titulo: str, cor: str):
+def create_category(titulo: str, cor: str):
     try:
         query_object = Categoria.insert_category(titulo, cor)
         db.query(query_object)
@@ -109,6 +109,16 @@ def create_video(titulo: str, cor: str):
         )
     
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))        
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+@app.put("/category/{id}")
+def edit_category(id: int, titulo: str, cor: str):
+    try:
+        query_object = Categoria.edit_category(id, titulo, cor)
+        db.query(query_object)
+        return {"message": "Categoria atualizada"}
+    
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))         
 
   

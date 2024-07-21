@@ -22,10 +22,10 @@ class Videos:
         return f"INSERT INTO videos (categoria_id, titulo, descricao, url) VALUES ('{categoria_id}', '{titulo}', '{descricao}', '{url}');"
 
     @staticmethod
-    def edit_video(id, titulo, descricao, url):
+    def edit_video(id, categoria_id, titulo, descricao, url):
         if not Videos.validate_url(url):
             raise ValueError('URL must start with "http://"')
-        return f"UPDATE videos SET titulo = '{titulo}', descricao = '{descricao}', url = '{url}' WHERE videos.id = {id};"   
+        return f"UPDATE videos SET categoria_id ='{categoria_id}', titulo = '{titulo}', descricao = '{descricao}', url = '{url}' WHERE id = {id};"   
 
     @staticmethod
     def delete_video(id):
