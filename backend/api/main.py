@@ -121,4 +121,17 @@ def edit_category(id: int, titulo: str, cor: str):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))         
 
-  
+@app.delete("/category/{id}")
+def delete_category(id):
+    try:
+        query_object = Categoria.category_exists(id)
+        result = db.query(query_object)
+        if not result[0][0]:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Categoria, não encontrada")
+
+        query_object = Categoria.delete_category(id)
+        db.query(query_object)
+        return {"message": "Categoria, deletada com sucesso"}
+            
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))  
