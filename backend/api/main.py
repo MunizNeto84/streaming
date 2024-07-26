@@ -37,6 +37,15 @@ def get_videos_by_id(id):
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
+@app.get("/videos/")
+def get_videos_search(search: str):
+    try:
+        query_object = Videos.get_search_videos(search)
+        result = db.query(query_object)
+        return {"videos": result}
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))  
+
 
 @app.post("/video")
 def create_video(video: Video):

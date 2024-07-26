@@ -16,6 +16,10 @@ class Videos:
         return "SELECT * FROM videos;"
     
     @staticmethod
+    def get_search_videos(search=None):
+        return f"SELECT * FROM videos WHERE titulo ILIKE '%{search}%'"
+    
+    @staticmethod
     def insert_video(categoria_id, titulo, descricao, url):
         if not Videos.validate_url(url):
             raise ValueError('URL must start with "http://" or "https://"')
