@@ -1,12 +1,12 @@
 import re
+from pydantic import BaseModel, Field
+from typing import Optional
 
-class Video:
-    def __init__(self, id, titulo, descricao, url, categoria_id):
-        self.id = id
-        self.titulo = titulo
-        self.descricao = descricao
-        self.url = url
-        self.categoria_id = categoria_id
+class Video(BaseModel):
+    categoria_id: int = Field(1, description = "ID da categoria")
+    titulo: Optional[str] = Field("titulo", description = "Titulo do vídeo")
+    descricao: Optional[str] = Field("decricao do video", description = "Descrição do vídeo")
+    url: Optional[str] = Field("https://www.youtube.com/watch?v=string", description = "Url do vídeo")
 
     @staticmethod
     def get_all_videos(search=None):

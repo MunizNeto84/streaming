@@ -1,9 +1,8 @@
+from pydantic import BaseModel, Field
 
-class Categoria:
-    def __init__(self, id, titulo, cor):
-        self.id = id
-        self.titulo = titulo
-        self.cor = cor
+class Categoria(BaseModel):
+    titulo: str = Field("titulo", description = "Titulo da categoria")
+    cor:  str = Field("Cor", description = "Codigo da cor")
     
     @staticmethod
     def get_all_category():

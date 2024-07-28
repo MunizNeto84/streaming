@@ -4,10 +4,6 @@ from pydantic import BaseModel
 from backend.infra.db.database import Database
 from backend.model.categoria import Categoria as CategoriaModel
 
-class Categoria(BaseModel):
-    titulo: str = "titulo"
-    cor: str = "hash da cor"
-
 db = Database()
 
 def get_categoria():
@@ -49,7 +45,7 @@ def get_categoria_id(id):
     except Exception as e:
         JSONResponse(content={"Error": str(e)}, status_code=400)
 
-def insert_categoria(categoria: Categoria):
+def insert_categoria(categoria: CategoriaModel):
     try:
         query_object = CategoriaModel.insert_category(categoria.titulo, categoria.cor)
         db.query(query_object)

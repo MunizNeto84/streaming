@@ -5,12 +5,6 @@ from typing import Optional
 from backend.infra.db.database import Database
 from backend.model.video import Video as VideoModel
 
-class Video(BaseModel):
-    categoria_id: int = 1
-    titulo: Optional[str] = "titulo"
-    descricao: Optional[str] = "decricao do video"
-    url: Optional[str] = "https://www.youtube.com/watch?v=string"
-
 db = Database()
 
 def get_videos(search: str):
@@ -55,7 +49,7 @@ def get_videos_by_id(id):
     except Exception as e:
         return JSONResponse(content={"Error": str(e)}, status_code=400) 
     
-def insert_video(video: Video):
+def insert_video(video: VideoModel):
     try:
         query_object = VideoModel.insert_video(video.categoria_id, video.titulo, video.descricao, video.url)
         db.query(query_object)

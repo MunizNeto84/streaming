@@ -1,12 +1,17 @@
 from fastapi import FastAPI
 from typing import Optional
 
-from backend.controller.video import Video, get_videos, get_videos_by_id, insert_video, edit_video, delete_video
-from backend.controller.categoria import Categoria, get_categoria, get_categoria_id, insert_categoria, edit_categoria, delete_categoria, exibir_video_by_categoria
+from backend.controller.video import get_videos, get_videos_by_id, insert_video, edit_video, delete_video
+from backend.controller.categoria import get_categoria, get_categoria_id, insert_categoria, edit_categoria, delete_categoria, exibir_video_by_categoria
+from backend.model.video import Video
+from backend.model.categoria import Categoria
 
 app = FastAPI()
 
-@app.get("/video", tags=["Video"])
+@app.get("/video", response_model=Video, responses={
+    400: {"description": "Erro ao buscar o vídeo"},
+    422: {"description": "Não foi possível processar as instruções presentes"}
+}, tags=["Video"])
 def get_video_endpoint(search: Optional[str] = None):
     """
     Endpoint para buscar todos os vídeos ou buscar vídeos por um termo específico.
@@ -21,7 +26,11 @@ def get_video_endpoint(search: Optional[str] = None):
     response = get_videos(search)
     return response
 
-@app.get("/video/{id}", tags=["Video"])
+@app.get("/video/{id}",  response_model=Video, responses={
+    400: {"description": "Erro ao buscar o vídeo"},
+    404: {"description": "Videos não encontrado"},
+    422: {"description": "Não foi possível processar as instruções presentes"}
+}, tags=["Video"])
 def get_video_by_id_endpoint(id):
     """
     Endpoint para buscar video por um id específico.
@@ -37,7 +46,10 @@ def get_video_by_id_endpoint(id):
     response = get_videos_by_id(id)
     return response
 
-@app.post("/video", tags=["Video"])
+@app.post("/video", response_model=Video, responses={
+    400: {"description": "Erro ao inserir o vídeo"},
+    422: {"description": "Não foi possível processar as instruções presentes"}
+}, tags=["Video"])
 def post_insert_video_endpoint(video: Video):
     """
     Endpoint para inserir um vídeo na base de dados.
@@ -55,7 +67,11 @@ def post_insert_video_endpoint(video: Video):
     response = insert_video(video)
     return response
 
-@app.put("/video/{id}", tags=["Video"])
+@app.put("/video/{id}", response_model=Video, responses={
+    400: {"description": "Erro ao editar o vídeo"},
+    404: {"description": "Video não encontrado"},
+    422: {"description": "Não foi possível processar as instruções presentes"}
+}, tags=["Video"])
 def put_edit_video_endpoint(id, categoria_id, titulo, descricao, url):
     """
     Endpoint para editar um vídeo na base de dados.
@@ -73,7 +89,11 @@ def put_edit_video_endpoint(id, categoria_id, titulo, descricao, url):
     response = edit_video(id, categoria_id, titulo, descricao, url)
     return response
 
-@app.delete("/video/{id}", tags=["Video"])
+@app.delete("/video/{id}", response_model=Video, responses={
+    400: {"description": "Erro ao deletar o vídeo"},
+    404: {"description": "Video não encontrado"},
+    422: {"description": "Não foi possível processar as instruções presentes"}
+}, tags=["Video"])
 def delete_video_endpoint(id: int):
     """
     Endpoint para deletar um vídeo da base de dados.
@@ -89,7 +109,10 @@ def delete_video_endpoint(id: int):
     response = delete_video(id)
     return response
 
-@app.get("/categoria", tags=["Categoria"])
+@app.get("/categoria", response_model=Categoria, responses={
+    400: {"description": "Erro ao buscar a categoria"},
+    422: {"description": "Não foi possível processar as instruções presentes"}
+}, tags=["Categoria"])
 def get_category_endpoint():
     """
     Endpoint para buscar todas as categorias.
@@ -101,7 +124,11 @@ def get_category_endpoint():
     response = get_categoria()
     return response
 
-@app.get("/categoria/{id}", tags=["Categoria"])
+@app.get("/categoria/{id}", response_model=Categoria, responses={
+    400: {"description": "Erro ao buscar a categoria"},
+    404: {"description": "categoria não encontrada"},
+    422: {"description": "Não foi possível processar as instruções presentes"}
+}, tags=["Categoria"])
 def get_category_endpoint(id):
     """
     Endpoint para buscar a categoria por id.
@@ -116,7 +143,10 @@ def get_category_endpoint(id):
     response = get_categoria_id(id)
     return response
 
-@app.post("/categoria", tags=["Categoria"])
+@app.post("/categoria", response_model=Categoria, responses={
+    400: {"description": "Erro ao inserir a categoria"},
+    422: {"description": "Não foi possível processar as instruções presentes"}
+}, tags=["Categoria"])
 def post_insert_categoria_endpoint(categoria: Categoria):
     """
     Endpoint para inserir uma categoria da base de dados.
@@ -132,7 +162,11 @@ def post_insert_categoria_endpoint(categoria: Categoria):
     response = insert_categoria(categoria)
     return response
 
-@app.put("/category/{id}", tags=["Categoria"])
+@app.put("/category/{id}", response_model=Categoria, responses={
+    400: {"description": "Erro ao editar a categoria"},
+    404: {"description": "categoria não encontrada"},
+    422: {"description": "Não foi possível processar as instruções presentes"}
+}, tags=["Categoria"])
 def edit_category_endpoint(id: int, titulo: str, cor: str):
     """
     Endpoint para editar uma categoria.
@@ -150,7 +184,11 @@ def edit_category_endpoint(id: int, titulo: str, cor: str):
     response = edit_categoria(id, titulo, cor)
     return response
 
-@app.delete("/category/{id}", tags=["Categoria"])
+@app.delete("/category/{id}", response_model=Categoria, responses={
+    400: {"description": "Erro ao deletar a categoria"},
+    404: {"description": "categoria não encontrada"},
+    422: {"description": "Não foi possível processar as instruções presentes"}
+}, tags=["Categoria"])
 def delete_categoria_endpoint(id):
     """
     Endpoint para deletar uma categoria da base de dados.
@@ -166,7 +204,11 @@ def delete_categoria_endpoint(id):
     response = delete_categoria(id)
     return response
 
-@app.get("/category/{id}/videos", tags=["Categoria"])
+@app.get("/category/{id}/videos", response_model=Video, responses={
+    400: {"description": "Erro ao buscar video por categoria"},
+    404: {"description": "categoria não encontrada"},
+    422: {"description": "Não foi possível processar as instruções presentes"}
+}, tags=["Categoria"])
 def exibir_video_by_categoria_endpoint(id):
     """
     Endpoint para buscar videos por categoria.
@@ -175,7 +217,7 @@ def exibir_video_by_categoria_endpoint(id):
     - id (int): ID do categoria a ser buscada.
 
     Código de Status:
-    - 200 OK: Se a categoria foi deletada com sucesso.
+    - 200 OK: Se o video foi encontrado com sucesso.
     - 404 Not Found: Se a categoria não for encontrada.
     - 400 Bad Request: Se ocorrer um erro ao buscar o video.
     """
