@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from typing import Optional
 
 from backend.controller.video import Video, get_videos, get_videos_by_id, insert_video, edit_video, delete_video
-from backend.controller.categoria import Categoria, get_categoria, get_categoria_id, insert_categoria, edit_categoria, delete_categoria
+from backend.controller.categoria import Categoria, get_categoria, get_categoria_id, insert_categoria, edit_categoria, delete_categoria, exibir_video_by_categoria
 
 app = FastAPI()
 
@@ -164,4 +164,20 @@ def delete_categoria_endpoint(id):
     - 400 Bad Request: Se ocorrer um erro ao deletar a categoria.
     """
     response = delete_categoria(id)
+    return response
+
+@app.get("/category/{id}/videos", tags=["Categoria"])
+def exibir_video_by_categoria_endpoint(id):
+    """
+    Endpoint para buscar videos por categoria.
+
+    Parâmetros:
+    - id (int): ID do categoria a ser buscada.
+
+    Código de Status:
+    - 200 OK: Se a categoria foi deletada com sucesso.
+    - 404 Not Found: Se a categoria não for encontrada.
+    - 400 Bad Request: Se ocorrer um erro ao buscar o video.
+    """
+    response = exibir_video_by_categoria(id)
     return response

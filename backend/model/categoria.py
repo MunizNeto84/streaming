@@ -24,3 +24,7 @@ class Categoria:
     @staticmethod
     def delete_category(id):
         return f"DELETE FROM categoria WHERE id = {id}"
+    
+    @staticmethod
+    def exibir_video_by_category(id):
+        return f"SELECT * FROM videos WHERE categoria_id = {id}"

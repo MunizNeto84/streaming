@@ -120,3 +120,27 @@ def delete_categoria(id):
         
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)    
+    
+def exibir_video_by_categoria(id):
+    try:    
+        query_object = CategoriaModel.get_category_by_id(id)
+        result = db.query(query_object)
+        if not result:
+            return JSONResponse(content={"message": "Categoria, não encontrada."}, status_code=404)
+        
+        query_object = CategoriaModel.exibir_video_by_category(id)
+        results = db.query(query_object)
+
+        videos = [
+            {
+                "id": result[0],
+                "titulo": result[1],
+                "descricao": result[2],
+                "url": result[3],
+                "categoria_id": result[4]
+            } for result in results
+        ]
+        return JSONResponse(content={"videos": videos}, status_code=200)
+
+    except Exception as e:
+        return JSONResponse(content={"error": str(e)}, status_code=400)    
