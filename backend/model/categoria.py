@@ -23,8 +23,4 @@ class Categoria:
 
     @staticmethod
     def delete_category(id):
-        return f"DELETE FROM categoria WHERE id = {id}"   
-    
-    @staticmethod
-    def category_exists(id):
-        return f"SELECT EXISTS (SELECT 1 FROM categoria WHERE id = {id});"
+        return f"DELETE FROM categoria WHERE id = {id}"

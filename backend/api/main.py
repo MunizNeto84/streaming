@@ -1,146 +1,167 @@
-from fastapi import FastAPI, Response, HTTPException, status
-from pydantic import BaseModel
+from fastapi import FastAPI
 from typing import Optional
 
-from backend.infra.db.database import Database
-from backend.model.videos import Videos
-from backend.model.categoria import Categoria
-import json
-
-class Video(BaseModel):
-    categoria_id: int = 1
-    titulo: Optional[str] = "titulo"
-    descricao: Optional[str] = "decricao do video"
-    url: Optional[str] = "https://www.youtube.com/watch?v=string"
+from backend.controller.video import Video, get_videos, get_videos_by_id, insert_video, edit_video, delete_video
+from backend.controller.categoria import Categoria, get_categoria, get_categoria_id, insert_categoria, edit_categoria, delete_categoria
 
 app = FastAPI()
-db = Database()
 
-@app.get("/videos")
-def get_videos():
-    try:
-        query_object = Videos.get_all_videos()
-        result = db.query(query_object)
-        return {"videos": result}
+@app.get("/video", tags=["Video"])
+def get_video_endpoint(search: Optional[str] = None):
+    """
+    Endpoint para buscar todos os vídeos ou buscar vídeos por um termo específico.
+
+    Parâmetros:
+    - search (str, opcional): Um termo de busca para filtrar os vídeos por título.
     
-    except Exception as e:
-         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+    Código de Status:
+    - 200 OK: Se a operação for bem-sucedida e vídeos forem encontrados.
+    - 400 Bad Request: Se ocorrer um erro ao buscar os vídeos.
+    """
+    response = get_videos(search)
+    return response
 
-@app.get("/videos/{id}")
-def get_videos_by_id(id):
-    try:
-        query_object = Videos.get_video_by_id(id)
-        result = db.query(query_object)
-        
-        return {"videos": result}
+@app.get("/video/{id}", tags=["Video"])
+def get_video_by_id_endpoint(id):
+    """
+    Endpoint para buscar video por um id específico.
+
+    Parâmetros:
+    - id (int): Uma busca para trazer o video por id.
     
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    Código de Status:
+    - 200 OK: Se a operação for bem-sucedida e vídeos forem encontrados.
+    - 400 Bad Request: Se ocorrer um erro ao buscar os vídeos.
+    - 404 Not found: Se não encontrar video.
+    """
+    response = get_videos_by_id(id)
+    return response
 
-@app.get("/videos/")
-def get_videos_search(search: str):
-    try:
-        query_object = Videos.get_search_videos(search)
-        result = db.query(query_object)
-        return {"videos": result}
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))  
+@app.post("/video", tags=["Video"])
+def post_insert_video_endpoint(video: Video):
+    """
+    Endpoint para inserir um vídeo na base de dados.
 
+    Parâmetros:
+    - categoria_id (int, opcional): Categoria do vídeo.
+    - titulo (str): Título do vídeo.
+    - descricao (str): Descrição do vídeo.
+    - url (str): URL do vídeo.
 
-@app.post("/video")
-def create_video(video: Video):
-    try:
-        query_object = Videos.insert_video(video.categoria_id, video.titulo, video.descricao, video.url)
-        db.query(query_object)
-        return Response(
-            content=json.dumps({"message": "Video adicionado com sucesso"}),
-            status_code=status.HTTP_201_CREATED,
-            media_type="application/json"
-        )
-    
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-    
-@app.put("/video/{id}")
-def edit_video(id: int, categoria_id: str, titulo: str, descricao: str, url: str):
-    try:
-        query_object = Videos.edit_video(id, categoria_id, titulo, descricao, url)
-        db.query(query_object)
-        return {"message": "Video atualizado"}
-    
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))    
-    
-@app.delete("/video/{id}")
-def delete_video(id):
-    try:
-        query_object = Videos.video_exists(id)
-        result = db.query(query_object)
-        if not result[0][0]:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Video, não encontrado")
+    Código de Status:
+    - 201 Created: Se o vídeo foi criado.
+    - 400 Bad Request: Se ocorrer um erro ao inserir o vídeo.
+    """  
+    response = insert_video(video)
+    return response
 
-        query_object = Videos.delete_video(id)
-        db.query(query_object)
-        return {"message": "Video, deletado com sucesso"}
-            
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))    
+@app.put("/video/{id}", tags=["Video"])
+def put_edit_video_endpoint(id, categoria_id, titulo, descricao, url):
+    """
+    Endpoint para editar um vídeo na base de dados.
 
-@app.get("/category")
-def get_category():
-    try:
-        query_object = Categoria.get_all_category()
-        result = db.query(query_object)
-        return {"category": result}
+    Parâmetros:
+    - categoria_id (int): Categoria do vídeo.
+    - titulo (str): Título do vídeo.
+    - descricao (str): Descrição do vídeo.
+    - url (str): URL do vídeo.
 
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))    
+    Código de Status:
+    - 201 Created: Se o vídeo foi criado.
+    - 400 Bad Request: Se ocorrer um erro ao inserir o vídeo.
+    """ 
+    response = edit_video(id, categoria_id, titulo, descricao, url)
+    return response
 
-@app.get("/category/{id}")
-def get_category_by_id(id):
-    try:
-        query_object = Categoria.get_category_by_id(id)
-        result = db.query(query_object)
-        return {"category": result}
-    
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))  
+@app.delete("/video/{id}", tags=["Video"])
+def delete_video_endpoint(id: int):
+    """
+    Endpoint para deletar um vídeo da base de dados.
 
-@app.post("/category")
-def create_category(titulo: str, cor: str):
-    try:
-        query_object = Categoria.insert_category(titulo, cor)
-        db.query(query_object)
-        return Response(
-            content=json.dumps({"message": "Categoria criada com sucesso"}),
-            status_code=status.HTTP_201_CREATED,
-            media_type="application/json"
-        )
-    
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    Parâmetros:
+    - id (int): ID do vídeo a ser deletado.
 
-@app.put("/category/{id}")
-def edit_category(id: int, titulo: str, cor: str):
-    try:
-        query_object = Categoria.edit_category(id, titulo, cor)
-        db.query(query_object)
-        return {"message": "Categoria atualizada"}
-    
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))         
+    Código de Status:
+    - 200 OK: Se o vídeo foi deletado com sucesso.
+    - 404 Not Found: Se o vídeo não for encontrado.
+    - 400 Bad Request: Se ocorrer um erro ao deletar o vídeo.
+    """
+    response = delete_video(id)
+    return response
 
-@app.delete("/category/{id}")
-def delete_category(id):
-    try:
-        query_object = Categoria.category_exists(id)
-        result = db.query(query_object)
-        if not result[0][0]:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Categoria, não encontrada")
+@app.get("/categoria", tags=["Categoria"])
+def get_category_endpoint():
+    """
+    Endpoint para buscar todas as categorias.
 
-        query_object = Categoria.delete_category(id)
-        db.query(query_object)
-        return {"message": "Categoria, deletada com sucesso"}
-            
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))  
+    Código de Status:
+    - 200 OK: Se as categorias foram buscadas com sucesso.
+    - 400 Bad Request: Se ocorrer um erro ao buscar as categorias.
+    """
+    response = get_categoria()
+    return response
+
+@app.get("/categoria/{id}", tags=["Categoria"])
+def get_category_endpoint(id):
+    """
+    Endpoint para buscar a categoria por id.
+
+    Parâmetros:
+    - id (int): Uma busca para trazer o video por id.
+
+    Código de Status:
+    - 200 OK: Se as categorias foram buscadas com sucesso.
+    - 400 Bad Request: Se ocorrer um erro ao buscar as categorias.
+    """
+    response = get_categoria_id(id)
+    return response
+
+@app.post("/categoria", tags=["Categoria"])
+def post_insert_categoria_endpoint(categoria: Categoria):
+    """
+    Endpoint para inserir uma categoria da base de dados.
+
+    Parâmetros:
+    - titulo (str): Titulo da categoria.
+    - cor (str): codigo da cor da categoria.
+
+    Código de Status:
+    - 201 Create: Se o categoria foi criada com sucesso.
+    - 400 Bad Request: Se ocorrer um erro ao criar o categoria.
+    """
+    response = insert_categoria(categoria)
+    return response
+
+@app.put("/category/{id}", tags=["Categoria"])
+def edit_category_endpoint(id: int, titulo: str, cor: str):
+    """
+    Endpoint para editar uma categoria.
+
+    Parâmetros:
+    - id (int): Id da categoria.
+    - titulo (str): Titulo da categoria.
+    - cor (str): Codigo da cor da categoria.
+
+    Código de Status:
+    - 200 Create: Se o categoria foi editada com sucesso.
+    - 404 Not Found: Se o categoria não for encontrado.
+    - 400 Bad Request: Se ocorrer um erro ao criar o categoria.
+    """
+    response = edit_categoria(id, titulo, cor)
+    return response
+
+@app.delete("/category/{id}", tags=["Categoria"])
+def delete_categoria_endpoint(id):
+    """
+    Endpoint para deletar uma categoria da base de dados.
+
+    Parâmetros:
+    - id (int): ID do categoria a ser deletada.
+
+    Código de Status:
+    - 200 OK: Se a categoria foi deletada com sucesso.
+    - 404 Not Found: Se a categoria não for encontrada.
+    - 400 Bad Request: Se ocorrer um erro ao deletar a categoria.
+    """
+    response = delete_categoria(id)
+    return response

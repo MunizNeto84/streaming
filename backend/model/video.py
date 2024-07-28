@@ -1,44 +1,39 @@
 import re
 
-class Videos:
-    def __init__(self, id, titulo, descricao, url):
+class Video:
+    def __init__(self, id, titulo, descricao, url, categoria_id):
         self.id = id
         self.titulo = titulo
         self.descricao = descricao
         self.url = url
+        self.categoria_id = categoria_id
+
+    @staticmethod
+    def get_all_videos(search=None):
+        if search:
+            return f"SELECT * FROM videos WHERE titulo ILIKE '%{search}%'"
+        return "SELECT * FROM videos;"    
 
     @staticmethod
     def get_video_by_id(id):
         return f"SELECT * FROM videos WHERE videos.id = {id}"
     
     @staticmethod
-    def get_all_videos():
-        return "SELECT * FROM videos;"
-    
-    @staticmethod
-    def get_search_videos(search=None):
-        return f"SELECT * FROM videos WHERE titulo ILIKE '%{search}%'"
-    
-    @staticmethod
     def insert_video(categoria_id, titulo, descricao, url):
-        if not Videos.validate_url(url):
-            raise ValueError('URL must start with "http://" or "https://"')
+        if not Video.validate_url(url):
+            return f"URL must start with 'http://' or 'https://'"
         return f"INSERT INTO videos (categoria_id, titulo, descricao, url) VALUES ('{categoria_id}', '{titulo}', '{descricao}', '{url}');"
-
+    
     @staticmethod
     def edit_video(id, categoria_id, titulo, descricao, url):
-        if not Videos.validate_url(url):
-            raise ValueError('URL must start with "http://"')
+        if not Video.validate_url(url):
+            return f"URL must start with 'http://' or 'https://'"
         return f"UPDATE videos SET categoria_id ='{categoria_id}', titulo = '{titulo}', descricao = '{descricao}', url = '{url}' WHERE id = {id};"   
-
+    
     @staticmethod
     def delete_video(id):
         return f"DELETE FROM videos WHERE videos.id = {id}"
     
-    
-    @staticmethod
-    def video_exists(video_id):
-        return f"SELECT EXISTS (SELECT 1 FROM videos WHERE id = {video_id});"
 
     def validate_url(url):
         url_regex = re.compile(
