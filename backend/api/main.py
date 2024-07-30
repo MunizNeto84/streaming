@@ -72,7 +72,7 @@ def post_insert_video_endpoint(video: Video):
     404: {"description": "Video não encontrado"},
     422: {"description": "Não foi possível processar as instruções presentes"}
 }, tags=["Video"])
-def put_edit_video_endpoint(id, categoria_id, titulo, descricao, url):
+def put_edit_video_endpoint(id, video: Video):
     """
     Endpoint para editar um vídeo na base de dados.
 
@@ -86,7 +86,7 @@ def put_edit_video_endpoint(id, categoria_id, titulo, descricao, url):
     - 201 Created: Se o vídeo foi criado.
     - 400 Bad Request: Se ocorrer um erro ao inserir o vídeo.
     """ 
-    response = edit_video(id, categoria_id, titulo, descricao, url)
+    response = edit_video(id, video.categoria_id, video.titulo, video.descricao, video.url)
     return response
 
 @app.delete("/video/{id}", response_model=Video, responses={
