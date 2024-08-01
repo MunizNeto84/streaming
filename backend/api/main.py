@@ -162,12 +162,12 @@ def post_insert_categoria_endpoint(categoria: Categoria):
     response = insert_categoria(categoria)
     return response
 
-@app.put("/category/{id}", response_model=Categoria, responses={
+@app.put("/categoria/{id}", response_model=Categoria, responses={
     400: {"description": "Erro ao editar a categoria"},
     404: {"description": "categoria não encontrada"},
     422: {"description": "Não foi possível processar as instruções presentes"}
 }, tags=["Categoria"])
-def edit_category_endpoint(id: int, titulo: str, cor: str):
+def edit_category_endpoint(id: int, categoria: Categoria):
     """
     Endpoint para editar uma categoria.
 
@@ -181,10 +181,10 @@ def edit_category_endpoint(id: int, titulo: str, cor: str):
     - 404 Not Found: Se o categoria não for encontrado.
     - 400 Bad Request: Se ocorrer um erro ao criar o categoria.
     """
-    response = edit_categoria(id, titulo, cor)
+    response = edit_categoria(id, categoria.titulo, categoria.cor)
     return response
 
-@app.delete("/category/{id}", response_model=Categoria, responses={
+@app.delete("/categoria/{id}", response_model=Categoria, responses={
     400: {"description": "Erro ao deletar a categoria"},
     404: {"description": "categoria não encontrada"},
     422: {"description": "Não foi possível processar as instruções presentes"}
@@ -204,7 +204,7 @@ def delete_categoria_endpoint(id):
     response = delete_categoria(id)
     return response
 
-@app.get("/category/{id}/videos", response_model=Video, responses={
+@app.get("/categoria/{id}/videos", response_model=Video, responses={
     400: {"description": "Erro ao buscar video por categoria"},
     404: {"description": "categoria não encontrada"},
     422: {"description": "Não foi possível processar as instruções presentes"}

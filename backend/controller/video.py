@@ -88,31 +88,6 @@ def edit_video(id, categoria_id, titulo, descricao, url):
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)    
 
-
-# def edit_video(id, video: VideoModel):
-#     try:
-#         query_object = VideoModel.get_video_by_id(id)
-#         result = db.query(query_object)
-#         if not result or not result[0]:
-#             return JSONResponse(content={"message": "Video não encontrado."}, status_code=404)
-
-#         query_object = VideoModel.edit_video(id, video.categoria_id, video.titulo, video.descricao, video.url)
-#         db.query(query_object)
-#         video_edited = {
-#             "id": id,
-#             "titulo": video.titulo,
-#             "descricao": video.descricao,
-#             "url": video.url,
-#             "categoria_id": video.categoria_id
-#         }
-#         return JSONResponse(content={
-#             "message": "Video, editado com sucesso.",
-#             "video": video_edited
-#             }, status_code=200)
-#     except Exception as e:
-#         return JSONResponse(content={"error": str(e)}, status_code=400)    
-
-
 def delete_video(id: int):
     try:
         query_object = VideoModel.get_video_by_id(id)

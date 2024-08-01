@@ -45,7 +45,42 @@ class VideoTests(unittest.TestCase):
         id = self.get_first_video_id()
         response = self.client.delete(f"/video/{id}")
         self.assertEqual(response.status_code, 200)
-            
 
-if __name__ == "__main__":
-    unittest.main()
+    def test_05_post_categoria(self):        
+        response = self.client.post("/categoria", json={
+            "titulo": "Test categoria",
+            "cor": "codigo da cor"
+        })
+        self.assertEqual(response.status_code, 201)
+
+    def get_categoria_id(self):
+        response = self.client.get("/categoria")
+        categoria = response.json()["categoria"]
+        if categoria:
+            return categoria[1]["id"]
+        else:
+            return Exception("Nenhuma categoria encontrada no banco de dados")
+    
+    def test_06_get_categoria_by_id(self):
+        id = self.get_categoria_id()
+        response = self.client.get(f"/categoria/{id}")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["categoria"]["id"], id)    
+
+    def test_07_put_categoria(self):
+        id = self.get_categoria_id()
+        response = self.client.put(f"/categoria/{id}", json={
+            "titulo": "Test categoria",
+            "cor": "codigo da cor"
+        })
+        self.assertEqual(response.status_code, 200)
+
+    def test_08_get_videos_by_categoria(self):
+        id = self.get_categoria_id()
+        response = self.client.get(f"/categoria/{id}/videos")
+        self.assertEqual(response.status_code, 200)
+
+    def test_09_delete_categoria(self):
+        id = self.get_categoria_id()
+        response = self.client.delete(f"/categoria/{id}")
+        self.assertEqual(response.status_code, 200)           

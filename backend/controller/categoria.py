@@ -32,15 +32,13 @@ def get_categoria_id(id):
         if not result:
             return JSONResponse(content={"message": "Categoria, não encontrada."}, status_code=404)
         
-        categorias = [
-            {
+        categoria = {
                 "id": result[0][0],
                 "titulo": result[0][1],
                 "cor": result[0][2]
             }
-        ]
 
-        return JSONResponse(content={"Categoria": categorias}, status_code=200)
+        return JSONResponse(content={"categoria": categoria}, status_code=200)
     
     except Exception as e:
         JSONResponse(content={"Error": str(e)}, status_code=400)
