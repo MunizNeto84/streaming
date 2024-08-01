@@ -83,4 +83,11 @@ class VideoTests(unittest.TestCase):
     def test_09_delete_categoria(self):
         id = self.get_categoria_id()
         response = self.client.delete(f"/categoria/{id}")
-        self.assertEqual(response.status_code, 200)           
+        self.assertEqual(response.status_code, 200)
+
+    def test_10_get_videos_by_page(self):
+        response = self.client.get("/videos?page=1")
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertNotEqual(len(data["videos"]), 6)    
+
