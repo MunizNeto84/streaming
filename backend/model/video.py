@@ -11,12 +11,16 @@ class Video(BaseModel):
     @staticmethod
     def get_all_videos(search=None):
         if search:
-            return f"SELECT * FROM videos WHERE titulo ILIKE '%{search}%'"
-        return "SELECT * FROM videos;"    
+            return f"SELECT * FROM videos WHERE titulo ILIKE '%{search}%';"
+        return "SELECT * FROM videos;"
 
     @staticmethod
+    def get_videos_by_page(linhas: int, offset: int):
+        return f"SELECT * FROM videos LIMIT {linhas} OFFSET {offset};"   
+    
+    @staticmethod
     def get_video_by_id(id):
-        return f"SELECT * FROM videos WHERE videos.id = {id}"
+        return f"SELECT * FROM videos WHERE videos.id = {id};"
     
     @staticmethod
     def insert_video(categoria_id, titulo, descricao, url):

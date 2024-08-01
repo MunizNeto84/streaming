@@ -1,7 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from typing import Optional
 
-from backend.controller.video import get_videos, get_videos_by_id, insert_video, edit_video, delete_video
+from backend.controller.video import get_videos, get_videos_by_page, get_videos_by_id, insert_video, edit_video, delete_video
 from backend.controller.categoria import get_categoria, get_categoria_id, insert_categoria, edit_categoria, delete_categoria, exibir_video_by_categoria
 from backend.model.video import Video
 from backend.model.categoria import Categoria
@@ -44,6 +44,26 @@ def get_video_by_id_endpoint(id):
     - 404 Not found: Se não encontrar video.
     """
     response = get_videos_by_id(id)
+    return response
+
+@app.get("/videos",  response_model=Video, responses={
+    400: {"description": "Erro ao buscar o vídeo"},
+    404: {"description": "Video não encontrado"},
+    422: {"description": "Não foi possível processar as instruções presentes"}
+}, tags=["Video"])
+def get_video_by_page_endpoint(pagina: int = Query(1, ge=1)):
+    """
+    Endpoint para buscar video por um id específico.
+
+    Parâmetros:
+    - pagina (int): Uma busca para trazer os videos por paginação.
+    
+    Código de Status:
+    - 200 OK: Se a operação for bem-sucedida e vídeos forem encontrados.
+    - 400 Bad Request: Se ocorrer um erro ao buscar os vídeos.
+    - 404 Not found: Se não encontrar video.
+    """
+    response = get_videos_by_page(pagina)
     return response
 
 @app.post("/video", response_model=Video, responses={

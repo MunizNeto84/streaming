@@ -29,6 +29,31 @@ def get_videos(search: str):
     except Exception as e:
         JSONResponse(content={"Error": str(e)}, status_code=400)
 
+
+def get_videos_by_page(pagina: int):
+    try:
+        linhas = 5
+        offset = (pagina - 1) * linhas
+        query_object = VideoModel.get_videos_by_page(linhas, offset)
+        results = db.query(query_object)
+        
+        if not results:
+            return JSONResponse(content={"videos": []}, status_code=200)
+        
+        videos = [
+            {
+                "id": result[0],
+                "titulo": result[1],
+                "descricao": result[2],
+                "url": result[3],
+                "categoria_id": result[4]
+            } for result in results
+        ]
+        return JSONResponse(content={"videos": videos, "pagina": pagina}, status_code=200)
+
+    except Exception as e:
+        return JSONResponse(content={"Error": str(e)}, status_code=400)
+
 def get_videos_by_id(id):
     try:
         query_object = VideoModel.get_video_by_id(id)
